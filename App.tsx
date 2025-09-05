@@ -1,10 +1,24 @@
 import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { IconButton, PaperProvider } from "react-native-paper";
+import {
+  IconButton,
+  MD3LightTheme as DefaultTheme,
+  PaperProvider,
+  useTheme,
+} from "react-native-paper";
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#FC5200",
+  },
+};
 
 export default function App() {
   const [pace, setPace] = useState({ minutes: 6, seconds: 0 });
   const [height, setHeight] = useState(155);
+  const [running, setRunning] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handlePressIn = (action: () => void) => {
@@ -43,40 +57,77 @@ export default function App() {
   const decrementHeight = () => setHeight((h) => h - 1);
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={theme}>
       <View style={styles.container}>
-        <IconButton
-          mode="contained"
-          style={styles.iconButton}
-          icon="menu-up-outline"
-          onPressIn={() => handlePressIn(incrementPace)}
-          onPressOut={handlePressOut}
-        ></IconButton>
-        <Text>
-          {pace.minutes}:{pace.seconds.toString().padStart(2, "0")} /km
-        </Text>
-        <IconButton
-          mode="contained"
-          style={styles.iconButton}
-          icon="menu-down-outline"
-          onPressIn={() => handlePressIn(decrementPace)}
-          onPressOut={handlePressOut}
-        ></IconButton>
-        <IconButton
-          mode="contained"
-          style={styles.iconButton}
-          icon="menu-up-outline"
-          onPressIn={() => handlePressIn(incrementHeight)}
-          onPressOut={handlePressOut}
-        ></IconButton>
-        <Text>{height}cm</Text>
-        <IconButton
-          mode="contained"
-          style={styles.iconButton}
-          icon="menu-down-outline"
-          onPressIn={() => handlePressIn(decrementHeight)}
-          onPressOut={handlePressOut}
-        ></IconButton>
+        <View style={styles.paceSection}>
+          <IconButton
+            mode="contained"
+            style={[
+              styles.iconButton,
+              { borderWidth: 1, borderColor: theme.colors.primary },
+            ]}
+            icon="menu-up"
+            size={35}
+            onPressIn={() => handlePressIn(incrementPace)}
+            onPressOut={handlePressOut}
+            containerColor={"#fff"}
+          ></IconButton>
+          <Text>
+            {pace.minutes}:{pace.seconds.toString().padStart(2, "0")} /km
+          </Text>
+          <IconButton
+            mode="contained"
+            style={[
+              styles.iconButton,
+              { borderWidth: 1, borderColor: theme.colors.primary },
+            ]}
+            icon="menu-down"
+            size={35}
+            onPressIn={() => handlePressIn(decrementPace)}
+            onPressOut={handlePressOut}
+            containerColor={"#fff"}
+          ></IconButton>
+        </View>
+        <View style={styles.middleSection}>
+          <IconButton
+            mode="contained"
+            style={[
+              styles.iconButton,
+              { borderWidth: 1, borderColor: theme.colors.primary },
+            ]}
+            icon={running ? "pause" : "play"}
+            size={40}
+            onPress={() => setRunning(!running)}
+            containerColor={"#fff"}
+          ></IconButton>
+        </View>
+        <View style={styles.heightSection}>
+          <IconButton
+            mode="contained"
+            style={[
+              styles.iconButton,
+              { borderWidth: 1, borderColor: theme.colors.primary },
+            ]}
+            icon="menu-up"
+            size={35}
+            onPressIn={() => handlePressIn(incrementHeight)}
+            onPressOut={handlePressOut}
+            containerColor={"#fff"}
+          ></IconButton>
+          <Text>{height}cm</Text>
+          <IconButton
+            mode="contained"
+            style={[
+              styles.iconButton,
+              { borderWidth: 1, borderColor: theme.colors.primary },
+            ]}
+            icon="menu-down"
+            size={35}
+            onPressIn={() => handlePressIn(decrementHeight)}
+            onPressOut={handlePressOut}
+            containerColor={"#fff"}
+          ></IconButton>
+        </View>
       </View>
     </PaperProvider>
   );
@@ -87,9 +138,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
+    flexDirection: "row",
   },
   iconButton: {
     margin: 10,
+  },
+  paceSection: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  middleSection: {
+    alignItems: "center",
+    justifyContent: "flex-end",
+    alignSelf: "stretch",
+    paddingBottom: 50,
+  },
+  heightSection: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
