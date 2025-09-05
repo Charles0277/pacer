@@ -20,13 +20,19 @@ export default function App() {
   const [height, setHeight] = useState(155);
   const [running, setRunning] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handlePressIn = (action: () => void) => {
     action();
-    intervalRef.current = setInterval(action, 100);
+    timeoutRef.current = setTimeout(() => {
+      intervalRef.current = setInterval(action, 100);
+    }, 500);
   };
 
   const handlePressOut = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
